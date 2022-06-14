@@ -13,7 +13,7 @@ import { Controller, useForm } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom"
 import { useApi } from "../hooks/useApi"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { rewardEditSchema } from "../../src/schema"
+import { rewardEditSchema } from "../schema"
 import { Save } from "@mui/icons-material"
 import { toast } from "react-toastify"
 

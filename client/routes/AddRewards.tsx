@@ -15,7 +15,7 @@ import {
 } from "@mui/material"
 import React from "react"
 import { Controller, useForm } from "react-hook-form"
-import { rewardSchema } from "../../src/schema"
+import { rewardSchema } from "../schema"
 import { useApi } from "../hooks/useApi"
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
