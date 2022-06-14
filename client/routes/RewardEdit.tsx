@@ -97,7 +97,7 @@ export const RewardEdit: React.FC = () => {
           <Controller
             control={control}
             name="time"
-            render={({ field: { ref, ...field }, fieldState }) => (
+            render={({ field: { ref, onChange, ...field }, fieldState }) => (
               <TextField
                 disabled={isSubmitting}
                 label="타이머 시간"
@@ -106,6 +106,7 @@ export const RewardEdit: React.FC = () => {
                 type="number"
                 variant="standard"
                 {...field}
+                onChange={(e) => onChange(Number(e.target.value))}
               />
             )}
           />
