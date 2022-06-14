@@ -7,7 +7,8 @@
     "dev": "node --inspect -r ts-node/register src",
     "build": "tsc",
     "start": "node dist",
-    "client:dev": "parcel watch ./client/index.html --dist-dir client-out"
+    "client:dev": "parcel watch ./client/index.html --dist-dir client-out",
+    "client:build": "parcel build ./client/index.html --dist-dir client-out"
   },
   "keywords": [],
   "author": "",
