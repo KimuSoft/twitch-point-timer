@@ -155,16 +155,23 @@ const OverlayContent: React.FC = () => {
       transforms: ["jsx", "imports"],
     }).code
 
-    return new Function("useTimerData", "Mui", "styled", transpiled)(
+    let result: React.ReactNode = null
+
+    new Function("useTimerData", "Mui", "styled", "render", transpiled)(
       useTimerData,
       Mui,
-      styled
+      styled,
+      (element: React.ReactNode) => {
+        result = element
+      }
     )
+
+    return result
   }, [user.overlayCode])
 
   return (
     <Box sx={{ width: "100%", height: "100%", "& pre": { margin: 0 } }}>
-      <Element />
+      {Element}
     </Box>
   )
 }
