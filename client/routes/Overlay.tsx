@@ -154,6 +154,7 @@ const OverlayContent: React.FC = () => {
       <LiveProvider
         code={user.overlayCode}
         scope={{ useTimerData, Mui, styled }}
+        noInline
       >
         <LivePreview />
         <LiveError />
