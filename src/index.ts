@@ -135,7 +135,7 @@ app.get("/overlay/:key", async (req, res, next) => {
 
   if (!user) return next()
 
-  return res.json({overlayCode: user.overlayCode})
+  return res.json({ overlayCode: user.overlayCode || defaultCode })
 })
 
 const addTimeSchema = z.object({
@@ -228,6 +228,8 @@ function Timer() {
     {timers.map((x,i) => <div key={i}>{x.name} 남은 시간: {x.remainingTime}</div>)}
   </div>
 }
+
+render(<Timer/>)
 `.trim()
 
 app.get("/me", (req, res) => {
