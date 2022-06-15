@@ -147,20 +147,11 @@ const Submitter: React.FC<{ reward: Reward }> = ({
   const { key } = useParams<"key">()
 
   const add = React.useCallback(async () => {
-    toast.promise(
-      async () => {
-        await axios.post("/addTime", {
-          reward: id,
-          time: value,
-          overlay: key,
-        })
-      },
-      {
-        pending: "추가하는 중...",
-        success: `리워드 ${name}에 ${value}초가 추가되었습니다`,
-        error: "추가 실패",
-      }
-    )
+    await axios.post("/addTime", {
+      reward: id,
+      time: value,
+      overlay: key,
+    })
   }, [value, name, id, key])
 
   return (

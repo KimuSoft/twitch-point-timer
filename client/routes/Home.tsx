@@ -28,7 +28,7 @@ const useTimerData = (): Data[] => {
     remainingSeconds: 60,
     reward: {
       id: "test",
-      endsAt: new Date(),
+      endsAt: Date.now(),
       name: "Hello",
       time: 120,
       userId: "1",

@@ -164,7 +164,7 @@ app.post("/addTime", async (req, res) => {
 
   if (!reward) return res.status(404).json({ error: "Reward not found" })
 
-  let endsAt = reward.endsAt.getTime()
+  let endsAt = reward.endsAt
 
   const now = Date.now()
 
@@ -176,7 +176,7 @@ app.post("/addTime", async (req, res) => {
 
   await prisma.reward.update({
     where: { id: reward.id },
-    data: { endsAt: new Date(endsAt) },
+    data: { endsAt },
   })
 
   console.log(`Reward ${reward.id} + ${reward.time} seconds`)
@@ -467,7 +467,7 @@ const addUserProvider = async (user: DbUser) => {
     })
 
     if (reward) {
-      let endsAt = reward.endsAt.getTime()
+      let endsAt = reward.endsAt
 
       const now = Date.now()
 
@@ -479,7 +479,7 @@ const addUserProvider = async (user: DbUser) => {
 
       await prisma.reward.update({
         where: { id: reward.id },
-        data: { endsAt: new Date(endsAt) },
+        data: { endsAt },
       })
 
       console.log(`Reward ${reward.id} + ${reward.time} seconds`)
