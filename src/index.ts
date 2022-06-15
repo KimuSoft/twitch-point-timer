@@ -120,6 +120,10 @@ app.use(passport.session())
 
 app.use(express.json())
 
+app.use(express.static(path.join(__dirname, "../client-out")))
+
+app.get("/authorized", (req, res) => res.json(!!req.user))
+
 app.get("/login", passport.authenticate("twitch", { successRedirect: "/" }))
 
 const addTimeSchema = z.object({
@@ -177,7 +181,7 @@ app.post("/addTime", async (req, res) => {
 })
 
 app.use((req, res, next) => {
-  if (!req.user) return res.redirect("/login")
+  if (!req.user) return res.status(401).json({ error: "Unauthorized" })
 
   next()
 })
@@ -385,8 +389,6 @@ app.get("/logout", (req, res) => {
     res.send("ok")
   })
 })
-
-app.use(express.static(path.join(__dirname, "../client-out")))
 
 io.sockets.on("connection", async (socket) => {
   const user = await prisma.user.findFirst({

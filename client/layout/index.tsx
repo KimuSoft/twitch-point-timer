@@ -7,10 +7,25 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material"
+import { User } from "@prisma/client"
 import React from "react"
 import { Link, Outlet } from "react-router-dom"
+import { useApi } from "../hooks/useApi"
 
 export const Layout: React.FC = () => {
+  return <React.Suspense fallback="Loading...">
+    <LayoutContent/>
+  </React.Suspense>
+}
+
+const LayoutContent: React.FC = () => {
+  const authorized = useApi<boolean>('/authorized')
+
+  if (!authorized) {
+    window.location.href = '/login'
+    return null
+  }
+
   return (
     <div>
       <AppBar>
