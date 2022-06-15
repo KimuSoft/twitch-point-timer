@@ -286,6 +286,29 @@ app.get("/rewards/:id", async (req, res) => {
   res.json(item)
 })
 
+app.delete("/rewards/:id", async (req, res) => {
+  const item = await prisma.reward.findFirst({
+    where: {
+      id: req.params.id,
+      userId: req.user!.id,
+    },
+  })
+
+  if (!item) return res.status(404).json({ error: "Reward not found" })
+
+  await prisma.reward.delete({ where: { id: item.id } })
+
+  io.in(`user-${req.user!.id}`).emit(
+    "updateData",
+    await prisma.reward.findMany({
+      where: { userId: req.user!.id },
+      orderBy: { id: "asc" },
+    })
+  )
+
+  return res.json({ ok: 1 })
+})
+
 app.patch("/rewards/:id", async (req, res) => {
   const item = await prisma.reward.findFirst({
     where: {

@@ -14,7 +14,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useApi } from "../hooks/useApi"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { rewardEditSchema } from "../schema"
-import { Save } from "@mui/icons-material"
+import { Delete, Save } from "@mui/icons-material"
 import { toast } from "react-toastify"
 
 export const RewardEdit: React.FC = () => {
@@ -34,6 +34,8 @@ export const RewardEdit: React.FC = () => {
   })
 
   const [error, setError] = React.useState<null | string>(null)
+
+  const navigate = useNavigate()
 
   return (
     <Paper
@@ -110,16 +112,41 @@ export const RewardEdit: React.FC = () => {
               />
             )}
           />
-          <Button
-            type="submit"
-            startIcon={<Save />}
-            fullWidth
-            variant="contained"
-            disableElevation
-            disabled={isSubmitting}
-          >
-            수정하기
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button
+              type="submit"
+              startIcon={<Save />}
+              fullWidth
+              variant="contained"
+              disableElevation
+              disabled={isSubmitting}
+            >
+              수정하기
+            </Button>
+            <Button
+              startIcon={<Delete />}
+              fullWidth
+              color="error"
+              variant="contained"
+              disableElevation
+              disabled={isSubmitting}
+              onClick={() => {
+                if (confirm("삭제할까요?")) {
+                  toast
+                    .promise(async () => axios.delete(`/rewards/${id}`), {
+                      error: "삭제 실패",
+                      pending: "삭제중..",
+                      success: "삭제 성공",
+                    })
+                    .then(() => {
+                      navigate("/rewards")
+                    })
+                }
+              }}
+            >
+              삭제하기
+            </Button>
+          </Stack>
         </Stack>
       </form>
     </Paper>
