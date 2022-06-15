@@ -8,6 +8,7 @@ import React from "react"
 import { LiveProvider } from "react-live"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
+import { HiddenTextField } from "../components/HiddenTextField"
 import { OverlayPreview } from "../components/OverlayPreview"
 import { useApi } from "../hooks/useApi"
 
@@ -48,6 +49,13 @@ export const Home: React.FC = () => {
     return url.toString()
   }, [overlayId])
 
+  const controllerURL = React.useMemo(() => {
+    const url = new URL(window.location.href)
+    url.hash = `#/controller/${overlayId}`
+
+    return url.toString()
+  }, [overlayId])
+
   return (
     <div>
       <Stack spacing={2} direction="column">
@@ -56,9 +64,14 @@ export const Home: React.FC = () => {
             타이머 관리
           </ListItemButton>
         </Paper>
-        <TextField
+        <HiddenTextField
           label="오버레이 URL"
           value={overlayURL}
+          InputProps={{ readOnly: true }}
+        />
+        <HiddenTextField
+          label="컨트롤러 URL"
+          value={controllerURL}
           InputProps={{ readOnly: true }}
         />
         <Button
