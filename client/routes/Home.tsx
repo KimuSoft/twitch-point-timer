@@ -1,7 +1,7 @@
 import { javascript } from "@codemirror/lang-javascript"
 import { Save } from "@mui/icons-material"
 import { Button, ListItemButton, Paper, Stack } from "@mui/material"
-import { User } from "@prisma/client"
+import { Reward, User } from "@prisma/client"
 import ReactCodeMirror from "@uiw/react-codemirror"
 import axios from "axios"
 import React from "react"
@@ -14,21 +14,26 @@ import { useApi } from "../hooks/useApi"
 import * as Mui from "@mui/material"
 import styled from "styled-components"
 
-const useTimerData = () => {
-  return [
-    {
+type Data = {
+  remainingTime: string
+  name: string
+  remainingSeconds: number
+  reward: Reward
+}
+
+const useTimerData = (): Data[] => {
+  return new Array(4).fill({
+    name: "Hello",
+    remainingTime: "1:00",
+    remainingSeconds: 60,
+    reward: {
+      id: "test",
+      endsAt: new Date(),
       name: "Hello",
-      remainingTime: "1:00",
+      time: 120,
+      userId: "1",
     },
-    {
-      name: "Hello",
-      remainingTime: "1:00",
-    },
-    {
-      name: "Hello",
-      remainingTime: "1:00",
-    },
-  ]
+  })
 }
 
 export const Home: React.FC = () => {
