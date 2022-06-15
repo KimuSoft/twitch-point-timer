@@ -6,10 +6,17 @@ import { useApi } from "../hooks/useApi"
 import io from "socket.io-client"
 import { useParams } from "react-router-dom"
 import { formatDuration } from "../utils"
+import * as Mui from "@mui/material"
+import styled from "styled-components"
 
-const DataContext = React.createContext<
-  { remainingTime: string; name: string }[]
->([])
+type Data = {
+  remainingTime: string
+  name: string
+  remainingSeconds: number
+  reward: Reward
+}
+
+const DataContext = React.createContext<Data[]>([])
 
 const useTimerData = () => React.useContext(DataContext)
 
@@ -37,7 +44,6 @@ export const Overlay: React.FC = () => {
     })
 
     socket.on("updateData", (data: Reward[]) => {
-      console.log(data)
       setRewards(data)
     })
 
@@ -50,12 +56,10 @@ export const Overlay: React.FC = () => {
 
   const [reload, setReload] = React.useState(false)
 
-  const [value, setValue] = React.useState<
-    { remainingTime: string; name: string }[]
-  >([])
+  const [value, setValue] = React.useState<Data[]>([])
 
   React.useEffect(() => {
-    const result: { remainingTime: string; name: string }[] = []
+    const result: Data[] = []
 
     const now = Date.now()
 
@@ -64,13 +68,15 @@ export const Overlay: React.FC = () => {
         continue
       }
 
+      const seconds = Math.floor(
+        (new Date(reward.endsAt.toString()).getTime() - now) / 1000
+      )
+
       result.push({
         name: reward.name,
-        remainingTime: formatDuration(
-          Math.floor(
-            (new Date(reward.endsAt.toString()).getTime() - now) / 1000
-          )
-        ),
+        remainingTime: formatDuration(seconds),
+        remainingSeconds: seconds,
+        reward,
       })
     }
 
@@ -145,7 +151,10 @@ const OverlayContent: React.FC = () => {
 
   return (
     <Box sx={{ width: "100%", height: "100%", "& pre": { margin: 0 } }}>
-      <LiveProvider code={user.overlayCode} scope={{ useTimerData }}>
+      <LiveProvider
+        code={user.overlayCode}
+        scope={{ useTimerData, Mui, styled }}
+      >
         <LivePreview />
         <LiveError />
       </LiveProvider>

@@ -11,6 +11,8 @@ import { toast } from "react-toastify"
 import { HiddenTextField } from "../components/HiddenTextField"
 import { OverlayPreview } from "../components/OverlayPreview"
 import { useApi } from "../hooks/useApi"
+import * as Mui from "@mui/material"
+import styled from "styled-components"
 
 const useTimerData = () => {
   return [
@@ -88,7 +90,7 @@ export const Home: React.FC = () => {
           extensions={[javascript({ jsx: true })]}
           onChange={(v) => setCode(v)}
         />
-        <LiveProvider code={code} scope={{ useTimerData }}>
+        <LiveProvider code={code} scope={{ useTimerData, Mui, styled }}>
           <OverlayPreview />
         </LiveProvider>
       </Stack>
