@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom"
 import { formatDuration } from "../utils"
 import * as Mui from "@mui/material"
 import styled from "styled-components"
+import { transform } from "sucrase"
 
 type Data = {
   remainingTime: string
@@ -149,16 +150,21 @@ const OverlayContent: React.FC = () => {
   const { key } = useParams<"key">()
   const user = useApi<User>(`/overlay/${key}`)
 
+  const Element = React.useMemo(() => {
+    const transpiled = transform(user.overlayCode, {
+      transforms: ["jsx", "imports"],
+    }).code
+
+    return new Function("useTimerData", "Mui", "styled", transpiled)(
+      useTimerData,
+      Mui,
+      styled
+    )
+  }, [user.overlayCode])
+
   return (
     <Box sx={{ width: "100%", height: "100%", "& pre": { margin: 0 } }}>
-      <LiveProvider
-        code={user.overlayCode}
-        scope={{ useTimerData, Mui, styled }}
-        noInline
-      >
-        <LivePreview />
-        <LiveError />
-      </LiveProvider>
+      <Element />
     </Box>
   )
 }
