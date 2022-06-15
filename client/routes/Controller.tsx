@@ -112,7 +112,7 @@ export const TimeController: React.FC = () => {
           Connecting...
         </div>
       ) : (
-        <Box sx={{ p: 4 }}>
+        <Box sx={{ p: 2 }}>
           <Grid container spacing={4}>
             {data.map((x, i) => (
               <Grid item xs={12} md={6} key={i}>
