@@ -140,7 +140,8 @@ export const Overlay: React.FC = () => {
 }
 
 const OverlayContent: React.FC = () => {
-  const user = useApi<User>("/me")
+  const { key } = useParams<"key">()
+  const user = useApi<User>(`/overlay/${key}`)
 
   return (
     <Box sx={{ width: "100%", height: "100%", "& pre": { margin: 0 } }}>

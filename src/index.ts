@@ -126,6 +126,18 @@ app.get("/authorized", (req, res) => res.json(!!req.user))
 
 app.get("/login", passport.authenticate("twitch", { successRedirect: "/" }))
 
+app.get("/overlay/:key", async (req, res, next) => {
+  if (!req.params.key) return next()
+
+  const user = await prisma.user.findUnique({
+    where: { overlayId: req.params.key },
+  })
+
+  if (!user) return next()
+
+  return res.json({overlayCode: user.overlayCode})
+})
+
 const addTimeSchema = z.object({
   reward: z.string(),
   time: z.number(),
