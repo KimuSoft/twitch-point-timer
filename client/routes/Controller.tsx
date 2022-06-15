@@ -66,13 +66,9 @@ export const TimeController: React.FC = () => {
       result.push({
         ...reward,
         remainingTime:
-          new Date(reward.endsAt.toString()).getTime() < now
+          reward.endsAt < now
             ? undefined
-            : formatDuration(
-                Math.floor(
-                  (new Date(reward.endsAt.toString()).getTime() - now) / 1000
-                )
-              ),
+            : formatDuration(Math.floor((reward.endsAt - now) / 1000)),
       })
     }
 
