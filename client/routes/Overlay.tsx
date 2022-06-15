@@ -64,11 +64,13 @@ export const Overlay: React.FC = () => {
     const now = Date.now()
 
     for (const reward of rewards) {
-      if (reward.endsAt < now) {
+      const endsAt = new Date(reward.endsAt).getTime()
+
+      if (endsAt < now) {
         continue
       }
 
-      const seconds = Math.floor((reward.endsAt - now) / 1000)
+      const seconds = Math.floor((endsAt - now) / 1000)
 
       result.push({
         name: reward.name,

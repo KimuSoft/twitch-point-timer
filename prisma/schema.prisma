@@ -30,7 +30,7 @@ model Reward {
 
   name String
 
-  endsAt BigInt @default(0)
+  endsAt DateTime @default(now())
 
   time Int @default(60)
 
