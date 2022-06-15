@@ -1,15 +1,13 @@
 import { javascript } from "@codemirror/lang-javascript"
 import { Save } from "@mui/icons-material"
-import { Button, ListItemButton, Paper, Stack, TextField } from "@mui/material"
+import { Button, ListItemButton, Paper, Stack } from "@mui/material"
 import { User } from "@prisma/client"
 import ReactCodeMirror from "@uiw/react-codemirror"
 import axios from "axios"
 import React from "react"
-import { LiveProvider } from "react-live"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import { HiddenTextField } from "../components/HiddenTextField"
-import { OverlayPreview } from "../components/OverlayPreview"
 import { useApi } from "../hooks/useApi"
 
 const useTimerData = () => {
@@ -88,9 +86,6 @@ export const Home: React.FC = () => {
           extensions={[javascript({ jsx: true })]}
           onChange={(v) => setCode(v)}
         />
-        <LiveProvider scope={{ useTimerData }} code={code}>
-          <OverlayPreview />
-        </LiveProvider>
       </Stack>
     </div>
   )

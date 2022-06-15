@@ -122,6 +122,60 @@ app.use(express.json())
 
 app.get("/login", passport.authenticate("twitch", { successRedirect: "/" }))
 
+const addTimeSchema = z.object({
+  reward: z.string(),
+  time: z.number(),
+  overlay: z.string(),
+})
+
+app.post("/addTime", async (req, res) => {
+  const result = await addTimeSchema.safeParseAsync(req.body)
+
+  if (!result.success)
+    return res.status(400).json({ error: "Validation failed" })
+
+  const data = result.data
+
+  const user = await prisma.user.findUnique({
+    where: { overlayId: data.overlay },
+  })
+
+  if (!user) return res.status(401).json({ error: "Unauthorized" })
+
+  const reward = await prisma.reward.findFirst({
+    where: { id: data.reward, userId: user.id },
+  })
+
+  if (!reward) return res.status(404).json({ error: "Reward not found" })
+
+  let endsAt = reward.endsAt.getTime()
+
+  const now = Date.now()
+
+  if (endsAt < now) {
+    endsAt = now
+  }
+
+  endsAt += data.time * 1000
+
+  await prisma.reward.update({
+    where: { id: reward.id },
+    data: { endsAt: new Date(endsAt) },
+  })
+
+  console.log(`Reward ${reward.id} + ${reward.time} seconds`)
+
+  io.in(`user-${user.id}`).emit(
+    "updateData",
+    await prisma.reward.findMany({
+      where: { userId: user.id },
+      orderBy: { id: "asc" },
+    })
+  )
+
+  res.json({ ok: 1 })
+})
+
 app.use((req, res, next) => {
   if (!req.user) return res.redirect("/login")
 
@@ -210,6 +264,14 @@ app.post("/rewards", async (req, res) => {
     },
   })
 
+  io.in(`user-${req.user!.id}`).emit(
+    "updateData",
+    await prisma.reward.findMany({
+      where: { userId: req.user!.id },
+      orderBy: { id: "asc" },
+    })
+  )
+
   res.json({ id })
 })
 
@@ -248,6 +310,14 @@ app.patch("/rewards/:id", async (req, res) => {
       time: data.time,
     },
   })
+
+  io.in(`user-${req.user!.id}`).emit(
+    "updateData",
+    await prisma.reward.findMany({
+      where: { userId: req.user!.id },
+      orderBy: { id: "asc" },
+    })
+  )
 
   res.json(updated)
 })
@@ -299,7 +369,7 @@ io.sockets.on("connection", async (socket) => {
   const user = await prisma.user.findFirst({
     where: { overlayId: socket.handshake.query.overlay as string },
     include: {
-      rewards: true,
+      rewards: { orderBy: { id: "asc" } },
     },
   })
 
@@ -377,7 +447,10 @@ const addUserProvider = async (user: DbUser) => {
 
       io.in(`user-${user.id}`).emit(
         "updateData",
-        await prisma.reward.findMany({ where: { userId: user.id } })
+        await prisma.reward.findMany({
+          where: { userId: user.id },
+          orderBy: { id: "asc" },
+        })
       )
     }
   })
