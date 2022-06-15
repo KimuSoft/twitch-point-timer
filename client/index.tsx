@@ -29,7 +29,7 @@ const Rewards = React.lazy(() =>
   import("./routes/Rewards").then((x) => ({ default: x.Rewards }))
 )
 
-const TimeManager = React.lazy(() =>
+const TimeController = React.lazy(() =>
   import("./routes/Controller").then((x) => ({ default: x.TimeController }))
 )
 
@@ -45,7 +45,7 @@ root.render(
     <HashRouter>
       <Routes>
         <Route path="/overlay/:key" element={<Overlay />} />
-        <Route path="/controller/:key" element={<TimeManager />} />
+        <Route path="/controller/:key" element={<TimeController />} />
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/rewards" element={<Rewards />} />
