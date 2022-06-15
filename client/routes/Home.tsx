@@ -88,7 +88,7 @@ export const Home: React.FC = () => {
           extensions={[javascript({ jsx: true })]}
           onChange={(v) => setCode(v)}
         />
-        <LiveProvider scope={{ useTimerData }}>
+        <LiveProvider code={code} scope={{ useTimerData }}>
           <OverlayPreview />
         </LiveProvider>
       </Stack>
