@@ -168,6 +168,7 @@ app.post("/addTime", async (req, res) => {
 
   const now = Date.now()
 
+  console.log(now, endsAt)
   if (endsAt < now) {
     endsAt = now
   }
