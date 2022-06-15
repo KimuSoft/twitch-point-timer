@@ -30,7 +30,7 @@ model Reward {
 
   name String
 
-  endsAt Int @default(0)
+  endsAt BigInt @default(0)
 
   time Int @default(60)
 
