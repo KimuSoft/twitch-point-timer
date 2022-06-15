@@ -157,13 +157,21 @@ const OverlayContent: React.FC = () => {
 
     let result: React.ReactNode = null
 
-    new Function("useTimerData", "Mui", "styled", "render", transpiled)(
+    new Function(
+      "useTimerData",
+      "Mui",
+      "styled",
+      "render",
+      "React",
+      transpiled
+    )(
       useTimerData,
       Mui,
       styled,
       (element: React.ReactNode) => {
         result = element
-      }
+      },
+      React
     )
 
     return result
