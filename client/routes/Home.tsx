@@ -136,6 +136,8 @@ export const Home: React.FC = () => {
       .map((_, i) => previewOverlayDataTemplate(i + 1))
   }, [previewDataCount])
 
+  const isMobile = Mui.useMediaQuery("screen and (max-width: 768px)")
+
   return (
     <div>
       <Mui.Dialog
@@ -194,13 +196,7 @@ export const Home: React.FC = () => {
           value={controllerURL}
           InputProps={{ readOnly: true }}
         />
-        <Stack
-          sx={{
-            flexDirection: "row",
-            "@media screen and (max-width: 768px)": { flexDirection: "column" },
-          }}
-          spacing={2}
-        >
+        <Stack direction={isMobile ? "column" : "row"} spacing={2}>
           <Button
             variant="outlined"
             onClick={() =>
