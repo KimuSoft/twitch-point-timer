@@ -60,7 +60,7 @@ const LayoutContent: React.FC = () => {
   )
 }
 
-class ErrorBoundary extends React.Component<
+export class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
   { error: any }
 > {

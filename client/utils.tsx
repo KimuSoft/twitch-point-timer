@@ -3,6 +3,8 @@ import React from "react"
 import { transform } from "sucrase"
 import * as Mui from "@mui/material"
 import styled from "styled-components"
+import { motion, AnimatePresence, AnimateSharedLayout } from "framer-motion"
+import { ErrorBoundary } from "./layout"
 
 export const formatDuration = (seconds: number) => {
   let minute = seconds / 60
@@ -33,6 +35,28 @@ export const OverlayDataContext = React.createContext<OverlayData[]>([])
 
 export const useTimerData = () => React.useContext(OverlayDataContext)
 
+const errorBoundary = (
+  Element: React.Component | React.ReactNode,
+  errorCallback: (error: any) => void
+) => {
+  return class ErrorBoundary extends React.Component {
+    componentDidCatch(error: any) {
+      errorCallback(error)
+    }
+
+    render() {
+      return typeof Element === "function" ? (
+        // @ts-ignore
+        <Element />
+      ) : React.isValidElement(Element) ? (
+        Element
+      ) : null
+    }
+  }
+}
+
+export default errorBoundary
+
 export const useTimerComponent = (
   code: string
 ): { Node?: React.ReactNode; error?: Error } => {
@@ -55,6 +79,9 @@ export const useTimerComponent = (
         "styled",
         "render",
         "React",
+        "motion",
+        "AnimtePresence",
+        "AnimateSharedLayout",
         transpiled
       )(
         useTimerData,
@@ -63,10 +90,17 @@ export const useTimerComponent = (
         (element: React.ReactNode) => {
           result = element
         },
-        React
+        React,
+        motion,
+        AnimatePresence,
+        AnimateSharedLayout
       )
 
-      setResult({ Node: result || undefined })
+      const Node = errorBoundary(result, (err) => {
+        setResult({ error: err })
+      })
+
+      setResult({ Node: <Node /> || undefined })
     } catch (e: any) {
       setResult({ error: e })
     }
