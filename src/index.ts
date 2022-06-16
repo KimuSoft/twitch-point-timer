@@ -3,8 +3,6 @@ import { Prisma, PrismaClient, User as DbUser, User } from "@prisma/client"
 import { AuthProvider, RefreshingAuthProvider } from "@twurple/auth"
 import { PubSubClient } from "@twurple/pubsub"
 import express from "express"
-
-import items from "../overlays/items.json"
 import fs from "fs"
 
 import SocketIO from "socket.io"
@@ -19,6 +17,8 @@ import ConnectRedis from "connect-redis"
 import Redis from "ioredis"
 import { rewardEditSchema, rewardSchema } from "./schema"
 import { z } from "zod"
+
+const items = require("../overlays/items.json")
 
 process.on("uncaughtException", console.error)
 process.on("unhandledRejection", console.error)
@@ -236,7 +236,7 @@ app.get("/me", (req, res) => {
   })
 })
 
-const overlays = items.map((x) => ({
+const overlays = items.map((x: any) => ({
   name: x.name,
   code: fs
     .readFileSync(path.join(__dirname, "../overlays", x.filename))

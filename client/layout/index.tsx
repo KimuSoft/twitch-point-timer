@@ -7,7 +7,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material"
-import { User } from "@prisma/client"
 import React from "react"
 import { Link, Outlet } from "react-router-dom"
 import { useApi } from "../hooks/useApi"
