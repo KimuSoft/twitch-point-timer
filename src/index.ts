@@ -223,9 +223,9 @@ app.post("/code", async (req, res) => {
   res.json({ ok: 1 })
 })
 
-const defaultCode = fs.readFileSync(
-  path.join(__dirname, "../overlays/default.js")
-)
+const defaultCode = fs
+  .readFileSync(path.join(__dirname, "../overlays/default.js"))
+  .toString()
 
 app.get("/me", (req, res) => {
   const user = req.user!

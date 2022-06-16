@@ -1,3 +1,9 @@
+import { Reward } from "@prisma/client"
+import React from "react"
+import { transform } from "sucrase"
+import * as Mui from "@mui/material"
+import styled from "styled-components"
+
 export const formatDuration = (seconds: number) => {
   let minute = seconds / 60
   const second = seconds % 60
@@ -14,4 +20,57 @@ export const formatDuration = (seconds: number) => {
   })}:${Math.floor(second).toLocaleString("en-US", {
     minimumIntegerDigits: 2,
   })}`
+}
+
+export type OverlayData = {
+  remainingTime: string
+  name: string
+  remainingSeconds: number
+  reward: Reward
+}
+
+export const OverlayDataContext = React.createContext<OverlayData[]>([])
+
+export const useTimerData = () => React.useContext(OverlayDataContext)
+
+export const useTimerComponent = (
+  code: string
+): { Node?: React.ReactNode; error?: Error } => {
+  const [result, setResult] = React.useState<{
+    Node?: React.ReactNode
+    error?: Error
+  }>({})
+
+  React.useEffect(() => {
+    try {
+      const transpiled = transform(code, {
+        transforms: ["jsx", "imports"],
+      }).code
+
+      let result: React.ReactNode = null
+
+      new Function(
+        "useTimerData",
+        "Mui",
+        "styled",
+        "render",
+        "React",
+        transpiled
+      )(
+        useTimerData,
+        Mui,
+        styled,
+        (element: React.ReactNode) => {
+          result = element
+        },
+        React
+      )
+
+      setResult({ Node: result || undefined })
+    } catch (e: any) {
+      setResult({ error: e })
+    }
+  }, [code])
+
+  return result
 }

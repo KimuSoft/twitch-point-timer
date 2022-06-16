@@ -13,17 +13,18 @@ import { Link, Outlet } from "react-router-dom"
 import { useApi } from "../hooks/useApi"
 
 export const Layout: React.FC = () => {
-  return <React.Suspense fallback="Loading...">
-    <LayoutContent/>
-  </React.Suspense>
+  return (
+    <React.Suspense fallback="Loading...">
+      <LayoutContent />
+    </React.Suspense>
+  )
 }
 
 const LayoutContent: React.FC = () => {
-  const authorized = useApi<boolean>('/authorized')
+  const authorized = useApi<boolean>("/authorized")
 
   if (!authorized) {
-    window.location.href = '/login'
-    return null
+    window.location.href = "/login"
   }
 
   return (

@@ -1,25 +1,16 @@
 import { Box } from "@mui/system"
 import { Reward, User } from "@prisma/client"
 import React from "react"
-import { LiveError, LivePreview, LiveProvider } from "react-live"
 import { useApi } from "../hooks/useApi"
 import io from "socket.io-client"
 import { useParams } from "react-router-dom"
-import { formatDuration } from "../utils"
-import * as Mui from "@mui/material"
-import styled from "styled-components"
-import { transform } from "sucrase"
-
-type Data = {
-  remainingTime: string
-  name: string
-  remainingSeconds: number
-  reward: Reward
-}
-
-const DataContext = React.createContext<Data[]>([])
-
-const useTimerData = () => React.useContext(DataContext)
+import {
+  formatDuration,
+  OverlayData,
+  OverlayDataContext,
+  useTimerComponent,
+} from "../utils"
+import { Alert } from "@mui/material"
 
 export const Overlay: React.FC = () => {
   const { key } = useParams<"key">()
@@ -57,10 +48,10 @@ export const Overlay: React.FC = () => {
 
   const [reload, setReload] = React.useState(false)
 
-  const [value, setValue] = React.useState<Data[]>([])
+  const [value, setValue] = React.useState<OverlayData[]>([])
 
   React.useEffect(() => {
-    const result: Data[] = []
+    const result: OverlayData[] = []
 
     const now = Date.now()
 
@@ -93,7 +84,7 @@ export const Overlay: React.FC = () => {
   }, [rewards, reload])
 
   return (
-    <DataContext.Provider value={value}>
+    <OverlayDataContext.Provider value={value}>
       <div style={{ width: "100vw", height: "100vh" }}>
         {disconnected ? (
           <div
@@ -142,7 +133,7 @@ export const Overlay: React.FC = () => {
           </React.Suspense>
         )}
       </div>
-    </DataContext.Provider>
+    </OverlayDataContext.Provider>
   )
 }
 
@@ -150,36 +141,12 @@ const OverlayContent: React.FC = () => {
   const { key } = useParams<"key">()
   const user = useApi<User>(`/overlay/${key}`)
 
-  const Element = React.useMemo(() => {
-    const transpiled = transform(user.overlayCode, {
-      transforms: ["jsx", "imports"],
-    }).code
-
-    let result: React.ReactNode = null
-
-    new Function(
-      "useTimerData",
-      "Mui",
-      "styled",
-      "render",
-      "React",
-      transpiled
-    )(
-      useTimerData,
-      Mui,
-      styled,
-      (element: React.ReactNode) => {
-        result = element
-      },
-      React
-    )
-
-    return result
-  }, [user.overlayCode])
+  const { Node, error } = useTimerComponent(user.overlayCode)
 
   return (
     <Box sx={{ width: "100%", height: "100%", "& pre": { margin: 0 } }}>
-      {Element}
+      {error && <Alert severity="error">{error.stack}</Alert>}
+      {Node}
     </Box>
   )
 }
