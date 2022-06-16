@@ -144,7 +144,14 @@ const OverlayContent: React.FC = () => {
   const { Node, error } = useTimerComponent(user.overlayCode)
 
   return (
-    <Box sx={{ width: "100%", height: "100%", "& pre": { margin: 0 } }}>
+    <Box
+      sx={{
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+        "& pre": { margin: 0 },
+      }}
+    >
       {error && <Alert severity="error">{error.stack}</Alert>}
       {Node}
     </Box>
