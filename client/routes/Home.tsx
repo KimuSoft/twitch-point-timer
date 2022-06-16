@@ -194,7 +194,13 @@ export const Home: React.FC = () => {
           value={controllerURL}
           InputProps={{ readOnly: true }}
         />
-        <Stack direction="row" spacing={2}>
+        <Stack
+          sx={{
+            flexDirection: "row",
+            "@media screen and (max-width: 768px)": { flexDirection: "column" },
+          }}
+          spacing={2}
+        >
           <Button
             variant="outlined"
             onClick={() =>
