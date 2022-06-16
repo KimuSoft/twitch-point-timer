@@ -4,7 +4,6 @@ import { transform } from "sucrase"
 import * as Mui from "@mui/material"
 import styled from "styled-components"
 import { motion, AnimatePresence, AnimateSharedLayout } from "framer-motion"
-import { ErrorBoundary } from "./layout"
 
 export const formatDuration = (seconds: number) => {
   let minute = seconds / 60
@@ -80,7 +79,7 @@ export const useTimerComponent = (
         "render",
         "React",
         "motion",
-        "AnimtePresence",
+        "Animateresence",
         "AnimateSharedLayout",
         transpiled
       )(
