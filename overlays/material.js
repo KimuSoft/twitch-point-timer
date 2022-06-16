@@ -43,9 +43,19 @@ function Timer() {
         alignItems: "center",
       }}
     >
-      {timers.map((x, i) => (
-        <TimerItem key={i} data={x} />
-      ))}
+      <AnimatePresence style={{ width: "100%" }}>
+        {timers.map((x) => (
+          <motion.div
+            style={{ width: "100%" }}
+            key={x.reward.id}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "fit-content", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+          >
+            <TimerItem data={x} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   )
 }
