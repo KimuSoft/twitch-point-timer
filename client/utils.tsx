@@ -79,7 +79,7 @@ export const useTimerComponent = (
         "render",
         "React",
         "motion",
-        "Animateresence",
+        "AnimatePresence",
         "AnimateSharedLayout",
         transpiled
       )(
