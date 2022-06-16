@@ -4,6 +4,9 @@ import { AuthProvider, RefreshingAuthProvider } from "@twurple/auth"
 import { PubSubClient } from "@twurple/pubsub"
 import express from "express"
 
+import items from "../overlays/items.json"
+import fs from "fs"
+
 import SocketIO from "socket.io"
 import { createServer } from "http"
 import passport from "passport"
@@ -220,17 +223,9 @@ app.post("/code", async (req, res) => {
   res.json({ ok: 1 })
 })
 
-const defaultCode = `
-function Timer() {
-  const timers = useTimerData()
-
-  return <div>
-    {timers.map((x,i) => <div key={i}>{x.name} 남은 시간: {x.remainingTime}</div>)}
-  </div>
-}
-
-render(<Timer/>)
-`.trim()
+const defaultCode = fs.readFileSync(
+  path.join(__dirname, "../overlays/default.js")
+)
 
 app.get("/me", (req, res) => {
   const user = req.user!
@@ -239,6 +234,17 @@ app.get("/me", (req, res) => {
     overlayCode: user.overlayCode || defaultCode,
     overlayId: user.overlayId,
   })
+})
+
+const overlays = items.map((x) => ({
+  name: x.name,
+  code: fs
+    .readFileSync(path.join(__dirname, "../overlays", x.filename))
+    .toString(),
+}))
+
+app.get("/predefinedOverlays", async (req, res) => {
+  res.json(overlays)
 })
 
 app.get("/rewards", async (req, res) => {
